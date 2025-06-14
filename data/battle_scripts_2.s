@@ -48,7 +48,7 @@ BattleScript_UseItemMessage:
 	return
 
 BattleScript_ItemRestoreHPRet:
-	clearmoveresultflags MOVE_RESULT_NO_EFFECT
+	bichalfword gMoveResultFlags, MOVE_RESULT_NO_EFFECT
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE
 	healthbarupdate BS_SCRIPTING
 	datahpupdate BS_SCRIPTING
@@ -69,7 +69,7 @@ BattleScript_ItemRestoreHPEnd:
 
 BattleScript_ItemRestoreHP_Party::
 	jumpifbyte CMP_EQUAL, gBattleCommunication, TRUE, BattleScript_ItemRestoreHP_SendOutRevivedBattler
-	clearmoveresultflags MOVE_RESULT_NO_EFFECT
+	bichalfword gMoveResultFlags, MOVE_RESULT_NO_EFFECT
 	printstring STRINGID_ITEMRESTOREDSPECIESHEALTH
 	waitmessage B_WAIT_TIME_LONG
 	return
@@ -195,13 +195,13 @@ BattleScript_TryNicknameCaughtMon::
 	printstring STRINGID_GIVENICKNAMECAPTURED
 	waitstate
 	setbyte gBattleCommunication, 0
-	trygivecaughtmonnick
-	givecaughtmon BattleScript_SuccessBallThrowEnd
+	trygivecaughtmonnick BattleScript_GiveCaughtMonEnd
+	givecaughtmon
 	printfromtable gCaughtMonStringIds
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_SuccessBallThrowEnd
 BattleScript_GiveCaughtMonEnd::
-	givecaughtmon BattleScript_SuccessBallThrowEnd
+	givecaughtmon
 BattleScript_SuccessBallThrowEnd::
 	setbyte gBattleOutcome, B_OUTCOME_CAUGHT
 	finishturn
@@ -265,12 +265,13 @@ BattleScript_ActionWallyThrow:
 	end2
 
 BattleScript_TrainerASlideMsgRet::
+	handletrainerslidemsg BS_SCRIPTING, 0
 	trainerslidein BS_OPPONENT1
-	handletrainerslidemsg BS_SCRIPTING, PRINT_SLIDE_MESSAGE
+	handletrainerslidemsg BS_SCRIPTING, 1
 	waitstate
 	trainerslideout BS_OPPONENT1
 	waitstate
-	handletrainerslidemsg BS_SCRIPTING, RESTORE_BATTLER_SLIDE_CONTROL
+	handletrainerslidemsg BS_SCRIPTING, 2
 	return
 
 BattleScript_TrainerASlideMsgEnd2::
@@ -278,12 +279,13 @@ BattleScript_TrainerASlideMsgEnd2::
 	end2
 
 BattleScript_TrainerBSlideMsgRet::
+	handletrainerslidemsg BS_SCRIPTING, 0
 	trainerslidein BS_OPPONENT2
-	handletrainerslidemsg BS_SCRIPTING, PRINT_SLIDE_MESSAGE
+	handletrainerslidemsg BS_SCRIPTING, 1
 	waitstate
 	trainerslideout BS_OPPONENT2
 	waitstate
-	handletrainerslidemsg BS_SCRIPTING, RESTORE_BATTLER_SLIDE_CONTROL
+	handletrainerslidemsg BS_SCRIPTING, 2
 	return
 
 BattleScript_TrainerBSlideMsgEnd2::

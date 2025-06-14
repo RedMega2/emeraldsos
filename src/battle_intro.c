@@ -13,6 +13,8 @@
 #include "constants/battle_partner.h"
 #include "constants/trainers.h"
 
+EWRAM_DATA bool8 gBattleIntroInProgress = FALSE;
+
 static void BattleIntroSlide1(u8);
 static void BattleIntroSlide2(u8);
 static void BattleIntroSlide3(u8);
@@ -24,16 +26,17 @@ static const u8 sBattleAnimBgCnts[] = {REG_OFFSET_BG0CNT, REG_OFFSET_BG1CNT, REG
 
 static const TaskFunc sBattleIntroSlideFuncs[] =
 {
-    [BATTLE_ENVIRONMENT_GRASS]      = BattleIntroSlide1,
-    [BATTLE_ENVIRONMENT_LONG_GRASS] = BattleIntroSlide1,
-    [BATTLE_ENVIRONMENT_SAND]       = BattleIntroSlide2,
-    [BATTLE_ENVIRONMENT_UNDERWATER] = BattleIntroSlide2,
-    [BATTLE_ENVIRONMENT_WATER]      = BattleIntroSlide2,
-    [BATTLE_ENVIRONMENT_POND]       = BattleIntroSlide1,
-    [BATTLE_ENVIRONMENT_MOUNTAIN]   = BattleIntroSlide1,
-    [BATTLE_ENVIRONMENT_CAVE]       = BattleIntroSlide1,
-    [BATTLE_ENVIRONMENT_BUILDING]   = BattleIntroSlide3,
-    [BATTLE_ENVIRONMENT_PLAIN]      = BattleIntroSlide3,
+    [BATTLE_TERRAIN_GRASS]      = BattleIntroSlide1,
+    [BATTLE_TERRAIN_LONG_GRASS] = BattleIntroSlide1,
+    [BATTLE_TERRAIN_SAND]       = BattleIntroSlide2,
+    [BATTLE_TERRAIN_UNDERWATER] = BattleIntroSlide2,
+    [BATTLE_TERRAIN_WATER]      = BattleIntroSlide2,
+    [BATTLE_TERRAIN_POND]       = BattleIntroSlide1,
+    [BATTLE_TERRAIN_MOUNTAIN]   = BattleIntroSlide1,
+    [BATTLE_TERRAIN_CAVE]       = BattleIntroSlide1,
+    [BATTLE_TERRAIN_BUILDING]   = BattleIntroSlide3,
+    [BATTLE_TERRAIN_PLAIN]      = BattleIntroSlide3,
+	[BATTLE_TERRAIN_VOLCANO]	= BattleIntroSlide2,
 };
 
 void SetAnimBgAttribute(u8 bgId, u8 attributeId, u8 value)
@@ -100,11 +103,13 @@ int GetAnimBgAttribute(u8 bgId, u8 attributeId)
 }
 
 #define tState data[0]
-#define tEnvironment data[1]
+#define tTerrain data[1]
 
-void HandleIntroSlide(u8 environment)
+void HandleIntroSlide(u8 terrain)
 {
     u8 taskId;
+	
+	gBattleIntroInProgress = TRUE;  // Activar el indicador
 
     if ((gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && gPartnerTrainerId < TRAINER_PARTNER(PARTNER_NONE))
     {
@@ -120,16 +125,16 @@ void HandleIntroSlide(u8 environment)
     }
     else if (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL) == SPECIES_KYOGRE)
     {
-        environment = BATTLE_ENVIRONMENT_UNDERWATER;
+        terrain = BATTLE_TERRAIN_UNDERWATER;
         taskId = CreateTask(BattleIntroSlide2, 0);
     }
     else
     {
-        taskId = CreateTask(sBattleIntroSlideFuncs[environment], 0);
+        taskId = CreateTask(sBattleIntroSlideFuncs[terrain], 0);
     }
 
     gTasks[taskId].tState = 0;
-    gTasks[taskId].tEnvironment = environment;
+    gTasks[taskId].tTerrain = terrain;
     gTasks[taskId].data[2] = 0;
     gTasks[taskId].data[3] = 0;
     gTasks[taskId].data[4] = 0;
@@ -139,6 +144,7 @@ void HandleIntroSlide(u8 environment)
 
 static void BattleIntroSlideEnd(u8 taskId)
 {
+	gBattleIntroInProgress = FALSE;  // Desactivar el indicador
     DestroyTask(taskId);
     gBattle_BG1_X = 0;
     gBattle_BG1_Y = 0;
@@ -244,7 +250,7 @@ static void BattleIntroSlide1(u8 taskId)
         }
         else
         {
-            if (gTasks[taskId].tEnvironment == BATTLE_ENVIRONMENT_LONG_GRASS)
+            if (gTasks[taskId].tTerrain == BATTLE_TERRAIN_LONG_GRASS)
             {
                 if (gBattle_BG1_Y != (u16)(-80))
                     gBattle_BG1_Y -= 2;
@@ -260,7 +266,7 @@ static void BattleIntroSlide1(u8 taskId)
             gBattle_WIN0V -= 0x3FC;
 
         if (gTasks[taskId].data[2])
-            gTasks[taskId].data[2] -= 2;
+            gTasks[taskId].data[2] -= INTRO_SLIDE_SPEED; //8 is default
 
         // Scanline settings have already been set in CB2_InitBattleInternal()
         for (i = 0; i < DISPLAY_HEIGHT / 2; i++)
@@ -292,18 +298,31 @@ static void BattleIntroSlide2(u8 taskId)
     if (B_FAST_INTRO_NO_SLIDE || gTestRunnerHeadless)
         return BattleIntroNoSlide(taskId);
 
-    switch (gTasks[taskId].tEnvironment)
+    switch (gTasks[taskId].tTerrain)
     {
-    case BATTLE_ENVIRONMENT_SAND:
-    case BATTLE_ENVIRONMENT_WATER:
+    case BATTLE_TERRAIN_SAND:
+	case BATTLE_TERRAIN_VOLCANO:
+    case BATTLE_TERRAIN_WATER:
         gBattle_BG1_X += 8;
         break;
-    case BATTLE_ENVIRONMENT_UNDERWATER:
+    case BATTLE_TERRAIN_UNDERWATER:
         gBattle_BG1_X += 6;
         break;
     }
 
-    if (gTasks[taskId].tEnvironment == BATTLE_ENVIRONMENT_WATER)
+    if (gTasks[taskId].tTerrain == BATTLE_TERRAIN_WATER)
+    {
+        gBattle_BG1_Y = Cos2(gTasks[taskId].data[6]) / 512 - 8;
+        if (gTasks[taskId].data[6] < 180)
+            gTasks[taskId].data[6] += 4;
+        else
+            gTasks[taskId].data[6] += 6;
+
+        if (gTasks[taskId].data[6] == 360)
+            gTasks[taskId].data[6] = 0;
+    }
+	
+    if (gTasks[taskId].tTerrain == BATTLE_TERRAIN_VOLCANO)
     {
         gBattle_BG1_Y = Cos2(gTasks[taskId].data[6]) / 512 - 8;
         if (gTasks[taskId].data[6] < 180)
@@ -371,7 +390,7 @@ static void BattleIntroSlide2(u8 taskId)
             gBattle_WIN0V -= 0x3FC;
 
         if (gTasks[taskId].data[2])
-            gTasks[taskId].data[2] -= 2;
+            gTasks[taskId].data[2] -= INTRO_SLIDE_SPEED; //2 is default
 
         // Scanline settings have already been set in CB2_InitBattleInternal()
         for (i = 0; i < DISPLAY_HEIGHT / 2; i++)
@@ -461,7 +480,7 @@ static void BattleIntroSlide3(u8 taskId)
             gBattle_WIN0V -= 0x3FC;
 
         if (gTasks[taskId].data[2])
-            gTasks[taskId].data[2] -= 2;
+            gTasks[taskId].data[2] -= INTRO_SLIDE_SPEED; //2 is default
 
         // Scanline settings have already been set in CB2_InitBattleInternal()
         for (i = 0; i < DISPLAY_HEIGHT / 2; i++)
@@ -543,7 +562,7 @@ static void BattleIntroSlideLink(u8 taskId)
             gBattle_WIN0V -= 0x3FC;
 
         if (gTasks[taskId].data[2])
-            gTasks[taskId].data[2] -= 2;
+            gTasks[taskId].data[2] -= INTRO_SLIDE_SPEED; //2 is default
 
         // Scanline settings have already been set in CB2_InitBattleInternal()
         for (i = 0; i < DISPLAY_HEIGHT / 2; i++)
@@ -607,7 +626,7 @@ static void BattleIntroSlidePartner(u8 taskId)
             gBattle_WIN0V += 0x3FC;
 
         if (gTasks[taskId].data[2])
-            gTasks[taskId].data[2] -= 2;
+            gTasks[taskId].data[2] -= INTRO_SLIDE_SPEED; //2 is default
 
         gBattle_BG1_X = gTasks[taskId].data[2];
         gBattle_BG2_X = -gTasks[taskId].data[2];

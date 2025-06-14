@@ -8,7 +8,6 @@
 #include "constants/cries.h"
 #include "constants/songs.h"
 #include "task.h"
-#include "test_runner.h"
 
 struct Fanfare
 {
@@ -16,7 +15,7 @@ struct Fanfare
     u16 duration;
 };
 
-EWRAM_DATA struct MusicPlayerInfo *gMPlay_PokemonCry = NULL;
+EWRAM_DATA struct MusicPlayerInfo* gMPlay_PokemonCry = NULL;
 EWRAM_DATA u8 gPokemonCryBGMDuckingCounter = 0;
 
 static u16 sCurrentMapMusic;
@@ -238,13 +237,6 @@ bool8 IsFanfareTaskInactive(void)
 
 static void Task_Fanfare(u8 taskId)
 {
-    if (gTestRunnerHeadless)
-    {
-        DestroyTask(taskId);
-        sFanfareCounter = 0;
-        return;
-    }
-
     if (sFanfareCounter)
     {
         sFanfareCounter--;

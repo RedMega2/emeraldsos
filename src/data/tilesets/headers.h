@@ -1,8 +1,3 @@
-#include "fieldmap.h"
-
-// Whether a palette has a night version, located at ((x + 9) % 16).pal
-#define SWAP_PAL(x) ((x) < NUM_PALS_IN_PRIMARY ? 1 << (x) : 1 << ((x) - NUM_PALS_IN_PRIMARY))
-
 const struct Tileset gTileset_General =
 {
     .isCompressed = TRUE,
@@ -363,7 +358,7 @@ const struct Tileset gTileset_SecretBaseBrownCave =
     .palettes = gTilesetPalettes_SecretBaseBrownCave,
     .metatiles = gMetatiles_SecretBaseSecondary,
     .metatileAttributes = gMetatileAttributes_SecretBaseSecondary,
-    .callback = NULL,
+    .callback = InitTilesetAnim_Secret_Base,
 };
 
 const struct Tileset gTileset_SecretBaseTree =
@@ -374,7 +369,7 @@ const struct Tileset gTileset_SecretBaseTree =
     .palettes = gTilesetPalettes_SecretBaseTree,
     .metatiles = gMetatiles_SecretBaseSecondary,
     .metatileAttributes = gMetatileAttributes_SecretBaseSecondary,
-    .callback = NULL,
+    .callback = InitTilesetAnim_Secret_Base,
 };
 
 const struct Tileset gTileset_SecretBaseShrub =
@@ -385,7 +380,7 @@ const struct Tileset gTileset_SecretBaseShrub =
     .palettes = gTilesetPalettes_SecretBaseShrub,
     .metatiles = gMetatiles_SecretBaseSecondary,
     .metatileAttributes = gMetatileAttributes_SecretBaseSecondary,
-    .callback = NULL,
+    .callback = InitTilesetAnim_Secret_Base,
 };
 
 const struct Tileset gTileset_SecretBaseBlueCave =
@@ -396,7 +391,7 @@ const struct Tileset gTileset_SecretBaseBlueCave =
     .palettes = gTilesetPalettes_SecretBaseBlueCave,
     .metatiles = gMetatiles_SecretBaseSecondary,
     .metatileAttributes = gMetatileAttributes_SecretBaseSecondary,
-    .callback = NULL,
+    .callback = InitTilesetAnim_Secret_Base,
 };
 
 const struct Tileset gTileset_SecretBaseYellowCave =
@@ -418,7 +413,7 @@ const struct Tileset gTileset_SecretBaseRedCave =
     .palettes = gTilesetPalettes_SecretBaseRedCave,
     .metatiles = gMetatiles_SecretBaseSecondary,
     .metatileAttributes = gMetatileAttributes_SecretBaseSecondary,
-    .callback = NULL,
+    .callback = InitTilesetAnim_Secret_Base,
 };
 
 const struct Tileset gTileset_InsideOfTruck =
@@ -641,8 +636,8 @@ const struct Tileset gTileset_SecretBase =
     .callback = NULL,
 };
 
-const struct Tileset *const gTilesetPointer_SecretBase = &gTileset_SecretBase;
-const struct Tileset *const gTilesetPointer_SecretBaseRedCave = &gTileset_SecretBaseRedCave;
+const struct Tileset * const gTilesetPointer_SecretBase = &gTileset_SecretBase;
+const struct Tileset * const gTilesetPointer_SecretBaseRedCave = &gTileset_SecretBaseRedCave;
 
 const struct Tileset gTileset_EliteFour =
 {
@@ -828,5 +823,38 @@ const struct Tileset gTileset_UnionRoom =
     .palettes = gTilesetPalettes_UnionRoom,
     .metatiles = gMetatiles_UnionRoom,
     .metatileAttributes = gMetatileAttributes_UnionRoom,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_Forest =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_Forest,
+    .palettes = gTilesetPalettes_Forest,
+    .metatiles = gMetatiles_Forest,
+    .metatileAttributes = gMetatileAttributes_Forest,
+    .callback = InitTilesetAnim_Forest,
+};
+
+const struct Tileset gTileset_Garden =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_Garden,
+    .palettes = gTilesetPalettes_Garden,
+    .metatiles = gMetatiles_Garden,
+    .metatileAttributes = gMetatileAttributes_Garden,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_Snow =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_Snow,
+    .palettes = gTilesetPalettes_Snow,
+    .metatiles = gMetatiles_Snow,
+    .metatileAttributes = gMetatileAttributes_Snow,
     .callback = NULL,
 };

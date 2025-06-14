@@ -1,11 +1,10 @@
 #include "global.h"
-#include "battle_main.h"
 #include "data.h"
-#include "decoration.h"
-#include "item.h"
-#include "move.h"
-#include "pokeball.h"
 #include "pokemon_icon.h"
+#include "decoration.h"
+#include "battle_main.h"
+#include "item.h"
+#include "pokeball.h"
 
 // The purpose of this struct is for outside applications to be
 // able to access parts of the ROM or its save file, like a public API.
@@ -21,16 +20,16 @@ struct GFRomHeader
     u32 version;
     u32 language;
     u8 gameName[32];
-    const struct CompressedSpriteSheet *monFrontPics;
-    const struct CompressedSpriteSheet *monBackPics;
-    const struct SpritePalette *monNormalPalettes;
-    const struct SpritePalette *monShinyPalettes;
-    const u8 *const *monIcons;
+    const struct CompressedSpriteSheet * monFrontPics;
+    const struct CompressedSpriteSheet * monBackPics;
+    const struct CompressedSpritePalette * monNormalPalettes;
+    const struct CompressedSpritePalette * monShinyPalettes;
+    const u8 *const * monIcons;
     const u8 *monIconPaletteIds;
-    const struct SpritePalette *monIconPalettes;
-    const u8 (*monSpeciesNames)[];
-    const u8 (*moveNames)[];
-    const struct Decoration *decorations;
+    const struct SpritePalette * monIconPalettes;
+    const u8 (* monSpeciesNames)[];
+    const u8 (* moveNames)[];
+    const struct Decoration * decorations;
     u32 flagsOffset;
     u32 varsOffset;
     u32 pokedexOffset;
@@ -70,13 +69,13 @@ struct GFRomHeader
     u32 externalEventFlagsOffset;
     u32 externalEventDataOffset;
     u32 unk18;
-    const struct SpeciesInfo *speciesInfo;
-    const u8 (*abilityNames)[];
-    const u8 *const *abilityDescriptions;
-    const struct Item *items;
-    const struct MoveInfo *moves;
-    const struct CompressedSpriteSheet *ballGfx;
-    const struct SpritePalette *ballPalettes;
+    const struct SpeciesInfo * speciesInfo;
+    const u8 (* abilityNames)[];
+    const u8 *const * abilityDescriptions;
+    const struct Item * items;
+    const struct MoveInfo * moves;
+    const struct CompressedSpriteSheet * ballGfx;
+    const struct CompressedSpritePalette * ballPalettes;
     u32 gcnLinkFlagsOffset;
     u32 gameClearFlag;
     u32 ribbonFlag;

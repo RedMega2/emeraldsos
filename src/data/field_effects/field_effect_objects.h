@@ -28,56 +28,8 @@ static const struct SpriteFrameImage sPicTable_ShadowExtraLarge[] = {
     obj_frame_tiles(gFieldEffectObjectPic_ShadowExtraLarge),
 };
 
-const struct SpriteFrameImage gFieldEffectObjectPicTable_BallLight[] = {
-    obj_frame_tiles(gFieldEffectObjectPic_BallLight),
-};
-
-const struct SpriteFrameImage gFieldEffectObjectPicTable_PokeCenterLight[] = {
-    obj_frame_tiles(gFieldEffectObjectPic_PokeCenterLight),
-};
-
-const struct SpriteFrameImage gFieldEffectObjectPicTable_MartLight[] = {
-    obj_frame_tiles(gFieldEffectObjectPic_MartLight),
-};
-
-const struct SpriteTemplate gFieldEffectObjectTemplate_BallLight = {
-    .tileTag = OBJ_EVENT_PAL_TAG_LIGHT,
-    .paletteTag = OBJ_EVENT_PAL_TAG_LIGHT,
-    .oam = &gObjectEventBaseOam_32x32,
-    .anims = sAnimTable_Inanimate,
-    .images = gFieldEffectObjectPicTable_BallLight,
-    .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = UpdateLightSprite,
-};
-
-const struct SpriteTemplate gFieldEffectObjectTemplate_PokeCenterLight = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_NEON_LIGHT,
-    .oam = &gObjectEventBaseOam_16x16,
-    .anims = sAnimTable_Inanimate,
-    .images = gFieldEffectObjectPicTable_PokeCenterLight,
-    .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = UpdateLightSprite,
-};
-
-const struct SpriteTemplate gFieldEffectObjectTemplate_MartLight = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_NEON_LIGHT,
-    .oam = &gObjectEventBaseOam_16x16,
-    .anims = sAnimTable_Inanimate,
-    .images = gFieldEffectObjectPicTable_MartLight,
-    .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = UpdateLightSprite,
-};
-
-const struct SpriteTemplate *const gFieldEffectLightTemplates[] = {
-    &gFieldEffectObjectTemplate_BallLight,
-    &gFieldEffectObjectTemplate_PokeCenterLight,
-    &gFieldEffectObjectTemplate_MartLight,
-};
-
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowSmall = {
-    .tileTag = FLDEFF_TILE_TAG_SHADOW_SMALL,
+    .tileTag = TAG_NONE,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_8x8,
     .anims = sAnimTable_Shadow,
@@ -87,7 +39,7 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowSmall = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowMedium = {
-    .tileTag = FLDEFF_TILE_TAG_SHADOW_MEDIUM,
+    .tileTag = TAG_NONE,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_16x8,
     .anims = sAnimTable_Shadow,
@@ -97,7 +49,7 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowMedium = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowLarge = {
-    .tileTag = FLDEFF_TILE_TAG_SHADOW_LARGE,
+    .tileTag = TAG_NONE,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_32x8,
     .anims = sAnimTable_Shadow,
@@ -107,7 +59,7 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowLarge = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowExtraLarge = {
-    .tileTag = FLDEFF_TILE_TAG_SHADOW_EXTRA_LARGE,
+    .tileTag = TAG_NONE,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_64x32,
     .anims = sAnimTable_Shadow,
@@ -1385,22 +1337,133 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_Rayquaza = {
 
 static const struct SpritePalette sSpritePalette_Unused = {gObjectEventPal_Npc3, FLDEFF_PAL_TAG_UNKNOWN};
 
-// cave dust
-static const struct SpriteFrameImage sPicTable_CaveDust[] = 
-{
-    overworld_frame(gFieldEffectObjectPic_CaveDust, 2, 2, 0),
-    overworld_frame(gFieldEffectObjectPic_CaveDust, 2, 2, 1),
-    overworld_frame(gFieldEffectObjectPic_CaveDust, 2, 2, 2),
-    overworld_frame(gFieldEffectObjectPic_CaveDust, 2, 2, 3),
-};
-const struct SpriteTemplate gFieldEffectObjectTemplate_CaveDust = {
-    .tileTag = 0xFFFF,
-    .paletteTag = FLDEFF_PAL_TAG_CAVE_DUST,
-    .oam = &gObjectEventBaseOam_16x16,
-    .anims = sAnimTable_WaterSurfacing,
-    .images = sPicTable_CaveDust,
-    .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = WaitFieldEffectSpriteAnim,
+//custom field effect objects
+static const struct SpriteFrameImage sPicTable_BeachGrass[] = {
+    overworld_frame(gFieldEffectObjectPic_BeachGrass, 2, 2, 0),
+    overworld_frame(gFieldEffectObjectPic_BeachGrass, 2, 2, 1),
+    overworld_frame(gFieldEffectObjectPic_BeachGrass, 2, 2, 2),
+    overworld_frame(gFieldEffectObjectPic_BeachGrass, 2, 2, 3),
+    overworld_frame(gFieldEffectObjectPic_BeachGrass, 2, 2, 4),
 };
 
-const struct SpritePalette gSpritePalette_CaveDust = {gFieldEffectObjectPalette_CaveDust, FLDEFF_PAL_TAG_CAVE_DUST};
+static const union AnimCmd sAnim_BeachGrass[] =
+{
+    ANIMCMD_FRAME(1, 10),
+    ANIMCMD_FRAME(2, 10),
+    ANIMCMD_FRAME(3, 10),
+    ANIMCMD_FRAME(4, 10),
+    ANIMCMD_FRAME(0, 10),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd *const sAnimTable_BeachGrass[] =
+{
+    sAnim_BeachGrass,
+};
+
+const struct SpriteTemplate gFieldEffectObjectTemplate_BeachGrass = {
+    .tileTag = TAG_NONE,
+    .paletteTag = FLDEFF_PAL_TAG_GENERAL_1,
+    .oam = &gObjectEventBaseOam_16x16,
+    .anims = sAnimTable_BeachGrass,
+    .images = sPicTable_BeachGrass,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = UpdateBeachGrassFieldEffect,
+};
+
+static const struct SpriteFrameImage sPicTable_JumpBeachGrass[] = {
+    overworld_frame(gFieldEffectObjectPic_JumpBeachGrass, 2, 1, 0),
+    overworld_frame(gFieldEffectObjectPic_JumpBeachGrass, 2, 1, 1),
+    overworld_frame(gFieldEffectObjectPic_JumpBeachGrass, 2, 1, 2),
+    overworld_frame(gFieldEffectObjectPic_JumpBeachGrass, 2, 1, 3),
+};
+
+static const union AnimCmd sAnim_JumpBeachGrass[] =
+{
+    ANIMCMD_FRAME(0, 8),
+    ANIMCMD_FRAME(1, 8),
+    ANIMCMD_FRAME(2, 8),
+    ANIMCMD_FRAME(3, 8),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd *const sAnimTable_JumpBeachGrass[] =
+{
+    sAnim_JumpBeachGrass,
+};
+
+const struct SpriteTemplate gFieldEffectObjectTemplate_JumpBeachGrass = {
+    .tileTag = TAG_NONE,
+    .paletteTag = FLDEFF_PAL_TAG_GENERAL_1,
+    .oam = &gObjectEventBaseOam_16x8,
+    .anims = sAnimTable_JumpBeachGrass,
+    .images = sPicTable_JumpBeachGrass,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = UpdateJumpImpactEffect,
+};
+
+const struct SpritePalette gSpritePalette_Snow = {gFieldEffectObjectSnow, FLDEFF_PAL_TAG_SNOW};
+
+static const struct SpriteFrameImage sPicTable_SnowGrass[] = {
+    overworld_frame(gFieldEffectObjectPic_SnowGrass, 2, 2, 0),
+    overworld_frame(gFieldEffectObjectPic_SnowGrass, 2, 2, 1),
+    overworld_frame(gFieldEffectObjectPic_SnowGrass, 2, 2, 2),
+    overworld_frame(gFieldEffectObjectPic_SnowGrass, 2, 2, 3),
+    overworld_frame(gFieldEffectObjectPic_SnowGrass, 2, 2, 4),
+};
+
+static const union AnimCmd sAnim_SnowGrass[] =
+{
+    ANIMCMD_FRAME(1, 10),
+    ANIMCMD_FRAME(2, 10),
+    ANIMCMD_FRAME(3, 10),
+    ANIMCMD_FRAME(4, 10),
+    ANIMCMD_FRAME(0, 10),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd *const sAnimTable_SnowGrass[] =
+{
+    sAnim_SnowGrass,
+};
+
+const struct SpriteTemplate gFieldEffectObjectTemplate_SnowGrass = {
+    .tileTag = TAG_NONE,
+    .paletteTag = FLDEFF_PAL_TAG_SNOW,
+    .oam = &gObjectEventBaseOam_16x16,
+    .anims = sAnimTable_SnowGrass,
+    .images = sPicTable_SnowGrass,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = UpdateSnowGrassFieldEffect,
+};
+
+static const struct SpriteFrameImage sPicTable_JumpSnowGrass[] = {
+    overworld_frame(gFieldEffectObjectPic_JumpSnowGrass, 2, 1, 0),
+    overworld_frame(gFieldEffectObjectPic_JumpSnowGrass, 2, 1, 1),
+    overworld_frame(gFieldEffectObjectPic_JumpSnowGrass, 2, 1, 2),
+    overworld_frame(gFieldEffectObjectPic_JumpSnowGrass, 2, 1, 3),
+};
+
+static const union AnimCmd sAnim_JumpSnowGrass[] =
+{
+    ANIMCMD_FRAME(0, 8),
+    ANIMCMD_FRAME(1, 8),
+    ANIMCMD_FRAME(2, 8),
+    ANIMCMD_FRAME(3, 8),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd *const sAnimTable_JumpSnowGrass[] =
+{
+    sAnim_JumpSnowGrass,
+};
+
+const struct SpriteTemplate gFieldEffectObjectTemplate_JumpSnowGrass = {
+    .tileTag = TAG_NONE,
+    .paletteTag = FLDEFF_PAL_TAG_SNOW,
+    .oam = &gObjectEventBaseOam_16x8,
+    .anims = sAnimTable_JumpSnowGrass,
+    .images = sPicTable_JumpSnowGrass,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = UpdateJumpImpactEffect,
+};
